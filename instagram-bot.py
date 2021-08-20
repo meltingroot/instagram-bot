@@ -68,13 +68,28 @@ while (count <= maxCount) :
     if (imageUrl.find("/p/") < 0) :
         break
 
-    parentNode = element.find_element_by_xpath('..')
+   
+    # 다음 순번 element 선택
+    elementSequence = elementSequence + 1
+    if (elementSequence > 2) :
+        elementSequence = 0
 
-    next_sibling = driver.execute_script("""
-        return arguments[0].nextElementSibling
-    """, parentNode)
+        parentNode = element.find_element_by_xpath('..').find_element_by_xpath('..')
 
-    element = next_sibling.find_element_by_tag_name('a')
+        next_sibling = driver.execute_script("""
+            return arguments[0].nextElementSibling
+        """, parentNode)
+
+        element = next_sibling.find_elements_by_tag_name('a')[0]
+
+    else :
+        parentNode = element.find_element_by_xpath('..')
+
+        next_sibling = driver.execute_script("""
+            return arguments[0].nextElementSibling
+        """, parentNode)
+
+        element = next_sibling.find_element_by_tag_name('a')
 
     count = count + 1
 
