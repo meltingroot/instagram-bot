@@ -37,17 +37,12 @@ print("검색 완료")
 
 # 인기게시물 삭제
 driver.execute_script("""
-    for (var i; i < 9; i++) {
-        document.getElementsByTagName("a")[i].remove();
-    } 
+    for (var i = 0; i < 9; i++) {
+        document.getElementsByTagName("a")[0].remove();
+    }
 """)
 print("인기 게시물 삭제 완료")
 
-
-# 게시물 높이 확인 (scroll 계산 용도)
-# driver.execute_script("""
-#     return document.getElementsByTagName("a")[0].parentElement.offsetHeight
-# """)
 
 # element 확인
 element = driver.find_elements_by_tag_name('a')[0]
@@ -55,10 +50,10 @@ print("element 확인 완료")
 
 
 # 최대 처리 건 수
-maxCount = 1 
+maxCount = 300
 
 # 처리 건 수
-count = 100
+count = 1
 elementSequence = 0
 while (count <= maxCount) :
     
@@ -73,15 +68,30 @@ while (count <= maxCount) :
     elementSequence = elementSequence + 1
     if (elementSequence > 2) :
         elementSequence = 0
+        try : 
+            parentNode = element.find_element_by_xpath('..').find_element_by_xpath('..')
 
-        parentNode = element.find_element_by_xpath('..').find_element_by_xpath('..')
+            next_sibling = driver.execute_script("""
+                return arguments[0].nextElementSibling
+            """, parentNode)
 
-        next_sibling = driver.execute_script("""
-            return arguments[0].nextElementSibling
-        """, parentNode)
+            element = next_sibling.find_elements_by_tag_name('a')[0]
 
-        element = next_sibling.find_elements_by_tag_name('a')[0]
+        except Exception as e :
+            print("오류발생", e)
+            driver.execute_script("""
+                window.scrollTo(0, document.body.scrollHeight);
+            """)
 
+            sleep(3)
+            
+            parentNode = element.find_element_by_xpath('..').find_element_by_xpath('..')
+
+            next_sibling = driver.execute_script("""
+                return arguments[0].nextElementSibling
+            """, parentNode)
+
+            element = next_sibling.find_elements_by_tag_name('a')[0]
     else :
         parentNode = element.find_element_by_xpath('..')
 
@@ -93,45 +103,4 @@ while (count <= maxCount) :
 
     count = count + 1
 
-    # element = elements[elementSequence]
-
-    # imageUrl = element.get_attribute("href")
-    # print(str(count) + ' : ' + imageUrl)
-
-
-    # if (imageUrl.find("/p/") < 0) :
-    #     driver.execute_script("""
-    #         window.scrollTo(0,5000);
-    #     """)
-    #     sleep(5)
-    #     driver.execute_script("""
-    #         window.scrollTo(0,0);
-    #     """)
-    #     sleep(5)
-
-    # else : 
-    #     driver.execute_script("""
-    #         document.getElementsByTagName("a")[0].remove();
-    #     """)
-
-    #     if (elementSequence%9 == 0) : 
-    #         driver.execute_script("""
-    #             window.scrollTo(0,5000);
-    #         """)
-    #         sleep(1.5)
-    #         driver.execute_script("""
-    #             window.scrollTo(0,0);
-    #         """)
-    #         sleep(1.5)
-    #         elements = driver.find_elements_by_tag_name('a')
-    #         elementSequence = 0
-        
-    #     elementSequence = elementSequence + 1
-
-    count = count + 1
-
 print("process finish")
-
-
-
-
