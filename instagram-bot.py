@@ -50,7 +50,7 @@ print("element 확인 완료")
 
 
 # 최대 처리 건 수
-maxCount = 300
+maxCount = 2
 
 # 처리 건 수
 count = 1
@@ -63,7 +63,40 @@ while (count <= maxCount) :
     if (imageUrl.find("/p/") < 0) :
         break
 
-   
+    # 새 탭 열기
+    driver.execute_script('window.open("'+ imageUrl + '")')
+    print("새 탭 열기")
+    sleep(5)
+
+    # 탭 전환
+    driver.switch_to_window(driver.window_handles[1])
+    print("탭 전환")
+    sleep(2)
+
+    # 팔로우
+    driver.find_elements_by_tag_name('button')[0].click()
+    print("팔로우")
+    sleep(5)
+
+    # 좋아요
+    driver.find_elements_by_tag_name('section')[1].find_elements_by_tag_name("button")[0].click()
+    print("좋아요")
+    sleep(5)
+    
+
+    # 댓글
+    driver.execute_script("document.getElementsByTagName('textarea')[0].value='nice puppy!!'")
+    print("댓글작성")
+    sleep(5)
+    driver.execute_script("document.getElementsByTagName('form')[0].getElementsByTagName('button')[1].click()")
+    print("댓글달기")
+    sleep(5)
+
+    # 탭 닫기
+    driver.close();
+    print("탭종료")
+    sleep(2)
+
     # 다음 순번 element 선택
     elementSequence = elementSequence + 1
     if (elementSequence > 2) :
